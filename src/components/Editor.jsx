@@ -5,6 +5,7 @@ import {useState} from "react";
 
 export default function Editor(){
 
+
     function resolvePorts(portType, data){
         console.log("portType", portType, data)
 
@@ -40,16 +41,15 @@ export default function Editor(){
             "gradeCreator": () => {
 
                 let gradeRange = [0, 1];
-                const pct = (inputValues.score/inputValues.total);
 
                 if (inputValues.isGradeKnown){
 
+                    const pct = (inputValues.score/inputValues.total);
                     gradeRange = [pct, pct]
                 }
 
                 return {grade:
                         {
-                            percentage: pct,
                             gradeRange: gradeRange
                         }
                 }
@@ -62,11 +62,6 @@ export default function Editor(){
                 console.log("weightedSum", inputValues)
                 return {grade:
                         {
-                            percentage: weigthedSum(
-                                inputValues.grade1.percentage,
-                                inputValues.weight1,
-                                inputValues.grade2.percentage,
-                                inputValues.weight2),
                             gradeRange: [
                                 weigthedSum(
                                     inputValues.grade1.gradeRange[0],
@@ -94,11 +89,8 @@ export default function Editor(){
 
     console.log( results,  results.finalGrade)
 
-
-
     return (
         <>
-
             <div style={{width: "90vw", height: "90vh"}}>
                 <NodeEditor
                     portTypes={config.portTypes}
