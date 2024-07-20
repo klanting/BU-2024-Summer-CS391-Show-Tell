@@ -37,6 +37,10 @@ npm install flume
         - weight n (percentage)
     - Outputs
         - grade (Object)
+- Sum:
+  - Take a sum of the grades
+  - Inputs
+  - Outputs
 - Required Sub Grades
     - This object can set required grades for sub-grades, (ex. on both the project and the exam someone need to pass else the person would receive a grade of 20%)
     - Inputs

@@ -87,8 +87,6 @@ config.addNodeType({
             hidePort: true
         }));
 
-        console.log("pdwdwd", inputData, connections, context)
-
         if (inputData.isGradeKnown && inputData.isGradeKnown["boolean"]){
 
             portsList.push(ports.integer({
@@ -128,7 +126,6 @@ config.addNodeType({
 
     inputs: ports => (inputData, connections, context) =>
         {
-            console.log("cond ports", inputData, connections, context)
 
             const connKeys = Object.keys(connections.inputs);
 
@@ -140,11 +137,15 @@ config.addNodeType({
 
                 const connKey = connKeys[i];
                 const match = connKey.match(re).length > 0;
-                console.log("kwak", match);
+
+                if (!match){
+                    continue;
+                }
+
                 matchCounter++;
                 highest = Math.max(Number(connKey.slice(5)), highest);
             }
-            console.log("hhh", highest)
+
             let portsList = []
             /*
             * Dynamically determine the amount of grades

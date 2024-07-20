@@ -3,11 +3,43 @@ import {NodeEditor, RootEngine, useRootEngine} from 'flume'
 import config from './config'
 import {useState} from "react";
 
+function getPercentage(gradeValue){
+    return gradeValue[0]/gradeValue[1];
+}
+
+function getGrades(inputObject){
+
+    const connKeys = Object.keys(inputObject);
+
+    let gradeList = [];
+
+    for (let i=0; i<connKeys.length; i++){
+
+        const connKey = connKeys[i];
+
+        const re = /grade*/g;
+
+        if (connKey.match(re) === null){
+            continue;
+        }
+
+        const match = connKey.match(re).length > 0;
+        if (!match || inputObject[connKey] === undefined){
+            continue;
+        }
+
+        const index = Number(connKey.slice(5));
+
+        gradeList.push([index, inputObject[connKey]]);
+    }
+
+    return gradeList;
+}
+
 export default function Editor(){
 
 
     function resolvePorts(portType, data){
-        console.log("portType", portType, data)
 
         /*
         * This dictionary/Map is a trick I often use because I don't like switch statements
@@ -27,8 +59,7 @@ export default function Editor(){
         return entryMap[portType]();
     }
 
-    function resolveNodes(node, inputValues, nodeType, context){
-        console.log("nodeType", nodeType, inputValues)
+    function resolveNodes(node, inputValues, nodeType){
 
         /*
         * This dictionary/Map is a trick I often use because I don't like switch statements
@@ -40,12 +71,12 @@ export default function Editor(){
         const entryMap = {
             "gradeCreator": () => {
 
-                let gradeRange = [0, 1];
+                let gradeRange = [[0, inputValues.total], [inputValues.total, inputValues.total]];
 
                 if (inputValues.isGradeKnown){
 
-                    const pct = (inputValues.score/inputValues.total);
-                    gradeRange = [pct, pct]
+                    const gradeTuple = [inputValues.score, inputValues.total];
+                    gradeRange = [gradeTuple, gradeTuple]
                 }
 
                 return {grade:
@@ -56,23 +87,35 @@ export default function Editor(){
             },
             "weightedSum": () => {
 
-                function weigthedSum(a1, w1, a2, w2){
-                    return a1*w1+a2*w2;
+                function weightedSum(a1, w1){
+                    return a1*w1;
                 }
-                console.log("weightedSum", inputValues)
+
+                let lowerBound = 0;
+                let upperBound = 0;
+
+                const gradeList = getGrades(inputValues);
+
+                for (let i=0; i<gradeList.length; i++){
+                    const grade = gradeList[i];
+
+                    lowerBound += weightedSum(
+                        getPercentage(inputValues[`grade${grade[0]}`].gradeRange[0]),
+                        inputValues[`weight${grade[0]}`]);
+
+                    upperBound += weightedSum(
+
+                        getPercentage(inputValues[`grade${grade[0]}`].gradeRange[1]),
+                        inputValues[`weight${grade[0]}`]);
+                }
+
+
                 return {grade:
                         {
                             gradeRange: [
-                                weigthedSum(
-                                    inputValues.grade1.gradeRange[0],
-                                    inputValues.weight1,
-                                    inputValues.grade2.gradeRange[0],
-                                    inputValues.weight2),
-                                weigthedSum(
-                                    inputValues.grade1.gradeRange[1],
-                                    inputValues.weight1,
-                                    inputValues.grade2.gradeRange[1],
-                                    inputValues.weight2)
+                                [lowerBound*100, 100],
+                                [upperBound*100, 100]
+
                             ]
                         }
                 }
@@ -86,8 +129,6 @@ export default function Editor(){
 
     const engine = new RootEngine(config, resolvePorts, resolveNodes);
     const results = useRootEngine(nodes, engine);
-
-    console.log( results,  results.finalGrade)
 
     return (
         <>
@@ -109,8 +150,9 @@ export default function Editor(){
                 />
             </div>
 
-            {results.finalGrade?.percentage && <p>{results.finalGrade.percentage*100}</p>}
-            {results.finalGrade?.gradeRange && <p>{`${results.finalGrade.gradeRange[0]*100}-${results.finalGrade.gradeRange[1]*100}`}</p>}
+
+
+            {results.finalGrade?.gradeRange && <p>{`${getPercentage(results.finalGrade.gradeRange[0])*100}-${getPercentage(results.finalGrade.gradeRange[1])*100}`}</p>}
 
 
         </>
