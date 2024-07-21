@@ -27,6 +27,7 @@ npm install flume
         - total (Integer)
     - Outputs
         - grade (Object)
+      
 - Weighted Sum:
     - This node let the user take a weighted sum of the grades
     - Inputs
@@ -38,6 +39,7 @@ npm install flume
         - weight n (percentage)
     - Outputs
         - grade (Object)
+      
 - Sum:
   - Take a sum of the grades
   - Inputs
@@ -45,21 +47,21 @@ npm install flume
     - ...
     - grade n (Object)
   - Outputs
+    - grade (Object)
+    
 - Total Converter:
   - Convert the total amount of points for a grade to another total, while keeping the same percentage
   - Inputs
     - grade (Object)
   - Outputs
     - grade (Object)
-- Required Sub Grades
-    - This object can set required grades for sub-grades, (ex. on both the project and the exam someone need to pass else the person would receive a grade of 20%)
+    
+- Required Grades
+    - Require that the grade is higher than the minimum else give it an else grade
     - Inputs
-        - Grade 1 (Object)
-        - Minimum 1 (percentage)
-        - ...
-        - Grade n (Object)
-        - Minimum n (percentage)
-        - Else grade (Object)
+        - Grade (Object)
+        - Minimum (percentage)
+        - Else Max grade (Object)
       
 - Integer Arithmetic
   - Node to do arithmetic with integers
@@ -69,6 +71,7 @@ npm install flume
     - Operation (String)
   - Outputs
     - Integer (Integer)
+    
 - Constant
   - A way to create constant integer/percentage
   - Inputs
@@ -76,3 +79,17 @@ npm install flume
     - integer/percentage depending on constantType
   - Outputs
     - integer/percentage depending on constantType
+    
+- Percentage To Integer
+  - Converts a percentage to an integer (rounding will occur)
+  - Inputs
+    - Percentage (Percentage)
+  - Outputs
+    - Integer (Integer)
+
+- Integer To percentage
+    - Converts an integer to a percentage
+    - Inputs
+        - Integer (Integer)
+    - Outputs
+        - Percentage (Percentage)

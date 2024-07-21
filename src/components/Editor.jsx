@@ -36,6 +36,10 @@ function getGrades(inputObject){
     return gradeList;
 }
 
+function getNanGrade(){
+    return {gradeRange: [[NaN, NaN], [NaN, NaN]]}
+}
+
 export default function Editor(){
 
 
@@ -54,7 +58,8 @@ export default function Editor(){
             "string": () => data.string,
             "grade": () => data.grade,
             "percentage": () => data.percentage/100,
-            "constantType": () => data.constantType
+            "constantType": () => data.constantType,
+            "operation": () => data.operation
         }
 
         return entryMap[portType]();
@@ -172,6 +177,66 @@ export default function Editor(){
 
                 return {output: inputValues.input}
 
+            },
+            "integerOperation": () => {
+
+                console.log("integerOperation", inputValues)
+
+                const operationMap = {
+                    "+": (a, b) => a+b,
+                    "-": (a, b) => a-b,
+                    "*": (a, b) => a*b,
+                    "/": (a, b) => Math.floor(a/b),
+                    "**": (a, b) => a**b,
+                    "%": (a, b) => a%b,
+                    "<<": (a, b) => a<<b,
+                    ">>": (a, b) => a>>b,
+                    "&&": (a, b) => a&&b,
+                    "||": (a, b) => a||b,
+                    "&": (a, b) => a&b,
+                    "|": (a, b) => a|b,
+                    "^": (a, b) => a^b
+                }
+
+                const unaryOperationMap = {
+                    "!": (a) => !a,
+                    "~": (a) => ~a
+                }
+
+                if (Object.keys(operationMap).includes(inputValues.operation)){
+                    return {integer: operationMap[inputValues.operation](inputValues.integer1, inputValues.integer2)}
+                }else{
+                    return {integer: unaryOperationMap[inputValues.operation](inputValues.integer1)}
+                }
+
+
+            },
+            "percentageToInteger": () => {
+                return {integer: Math.round(inputValues.percentage*100)}
+            },
+            "integerToPercentage": () => {
+                return {percentage: inputValues.integer/100}
+            },
+            "requiredGrade": () => {
+                console.log("jiwpdw", inputValues)
+                if (inputValues.grade === undefined){inputValues.grade = getNanGrade()}
+                if (inputValues.elseMaxGrade === undefined){inputValues.elseMaxGrade = getNanGrade()}
+
+                const lowerPCT = getPercentage(inputValues.grade.gradeRange[0]);
+                const upperPCT = getPercentage(inputValues.grade.gradeRange[1]);
+
+                let lowerBound = inputValues.grade.gradeRange[0];
+                let upperBound = inputValues.grade.gradeRange[1];
+
+                if (lowerPCT < inputValues.minimum){
+                    lowerBound = inputValues.elseMaxGrade.gradeRange[0];
+                }
+
+                if (upperPCT < inputValues.minimum){
+                    upperBound = inputValues.elseMaxGrade.gradeRange[1];
+                }
+
+                return {grade: {gradeRange: [lowerBound, upperBound]}}
             }
         }
 

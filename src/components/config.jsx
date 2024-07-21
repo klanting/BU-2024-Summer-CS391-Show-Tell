@@ -49,12 +49,25 @@ config.addPortType({
             name: "operation",
             label: "operation",
             options: [
-                {value: "+", label: "+"},
-                {value: "-", label: "-"},
-                {value: "*", label: "*"},
-                {value: "/", label: "/"},
-                {value: "^", label: "^"},
-            ]
+                {value: "+", label: "+ (Add)"},
+                {value: "-", label: "- (Subtract)"},
+                {value: "*", label: "* (Multiply)"},
+                {value: "/", label: "/ (Divide)"},
+                {value: "**", label: "** (Power)"},
+                {value: "%", label: "% (Modulo)"},
+                {value: "<<", label: "<< (Shift Left)"},
+                {value: ">>", label: ">> (Shift Right)"},
+                {value: "!", label: "! (Logical Not)"},
+                {value: "&&", label: "&& (Logical And)"},
+                {value: "||", label: "|| (Logical Or)"},
+                {value: "&", label: "& (Bitwise And)"},
+                {value: "|", label: "| (Bitwise Or)"},
+                {value: "~", label: "~ (Bitwise Not)"},
+                {value: "^", label: "^ (Bitwise Xor)"}
+
+
+            ],
+            defaultValue: "+"
         })
     ]
 })
@@ -113,17 +126,16 @@ config.addNodeType({
             portsList.push(ports.integer({
                 name: "score",
                 label: "score",
-                hidePort: true
+
             }));
 
 
         }
 
-
         portsList.push(ports.integer({
             name: "total",
             label: "total",
-            hidePort: true
+
         }));
 
 
@@ -157,8 +169,8 @@ config.addNodeType({
             for (let i=0; i<connKeys.length; i++){
 
                 const connKey = connKeys[i];
-                const match = connKey.match(re) !== undefined;
-
+                const match = connKey.match(re) !== null;
+                console.log(match, connKey.match(re), connKey)
                 if (!match){
                     continue;
                 }
@@ -184,7 +196,7 @@ config.addNodeType({
             /*
             * Dynamically determine the amount of grades
             * */
-            for (let i =0; i < Math.max(matchCounter+1, highest); i++){
+            for (let i = 0; i < Math.max(matchCounter+1, highest); i++){
                 portsList.push(ports.grade({
                     name: `grade${i+1}`,
                     label: `grade ${i+1}`
@@ -227,7 +239,7 @@ config.addNodeType({
         for (let i=0; i<connKeys.length; i++){
 
             const connKey = connKeys[i];
-            const match = connKey.match(re).length > 0;
+            const match = connKey.match(re) !== null;
 
             if (!match){
                 continue;
@@ -300,11 +312,20 @@ config.addNodeType({
     label: "Integer Operation",
     description: "Do operations with integers",
 
-    inputs: ports => [
-        ports.integer(),
-        ports.integer(),
-        ports.operation()
-    ],
+    inputs: ports => (inputData) => {
+
+        let portsList = [ports.operation(),
+            ports.integer({name: "integer1"})
+
+        ];
+
+        if (!["!", "~"].includes(inputData.operation.operation)){
+            portsList.push(ports.integer({name: "integer2"}))
+        }
+
+        return portsList;
+    }
+        ,
     outputs: ports => [
         ports.integer()
     ]
@@ -317,7 +338,6 @@ config.addNodeType({
     description: "Get a constant value",
 
     inputs: ports => (inputData) => {
-        console.log(inputData, "w", inputData.constantType)
 
         if (inputData.constantType === undefined){
             return [ports.constantType()];
@@ -334,7 +354,6 @@ config.addNodeType({
 
     },
     outputs: ports => (inputData) => {
-        console.log(inputData.constantType.constantType)
         if (inputData.constantType.constantType === "integer"){
             return [ports.integer({name: "output"})];
         }else if (inputData.constantType.constantType === "percentage"){
@@ -345,6 +364,59 @@ config.addNodeType({
 
 
     }
+
+})
+
+config.addNodeType({
+    type: "percentageToInteger",
+    label: "percentage to integer",
+    description: "Convert a percentage to an integer using rounding (integer 100 equals 100%)",
+
+    inputs: ports => [
+        ports.percentage()
+    ],
+    outputs: ports => [
+        ports.integer()
+    ]
+
+})
+
+config.addNodeType({
+    type: "integerToPercentage",
+    label: "integer to percentage",
+    description: "Convert an integer to a percentage using rounding (integer 100 equals 100%)",
+
+    inputs: ports => [
+        ports.integer()
+    ],
+    outputs: ports => [
+        ports.percentage()
+    ]
+
+})
+
+config.addNodeType({
+    type: "requiredGrade",
+    label: "Required Grade",
+    description: "Require that the grade is higher than the minimum else give it an else grade",
+
+    inputs: ports => [
+        ports.grade({
+            name: `grade`,
+            label: `grade`
+        }),
+        ports.percentage({
+            name: `minimum`,
+            label: `minimum`
+        }),
+        ports.grade({
+            name: `elseMaxGrade`,
+            label: `Else Max Grade`
+        })
+    ],
+    outputs: ports => [
+        ports.grade()
+    ]
 
 })
 
