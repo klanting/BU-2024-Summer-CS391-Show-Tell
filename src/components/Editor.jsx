@@ -53,7 +53,8 @@ export default function Editor(){
             "integer": () => data.integer,
             "string": () => data.string,
             "grade": () => data.grade,
-            "percentage": () => data.percentage/100
+            "percentage": () => data.percentage/100,
+            "constantType": () => data.constantType
         }
 
         return entryMap[portType]();
@@ -109,16 +110,68 @@ export default function Editor(){
                         inputValues[`weight${grade[0]}`]);
                 }
 
+                const total = inputValues.total;
 
                 return {grade:
                         {
                             gradeRange: [
-                                [lowerBound*100, 100],
-                                [upperBound*100, 100]
+                                [lowerBound*total, total],
+                                [upperBound*total, total]
 
                             ]
                         }
                 }
+            },
+            "sum": () => {
+
+                let lowerBound = 0;
+                let upperBound = 0;
+
+                let total = 0;
+
+                const gradeList = getGrades(inputValues);
+
+                for (let i=0; i<gradeList.length; i++){
+                    const grade = gradeList[i];
+                    lowerBound += inputValues[`grade${grade[0]}`].gradeRange[0][0];
+                    upperBound += inputValues[`grade${grade[0]}`].gradeRange[1][0];
+
+                    total += inputValues[`grade${grade[0]}`].gradeRange[0][1];
+                }
+
+
+
+                return {grade:
+                        {
+                            gradeRange: [
+                                [lowerBound, total],
+                                [upperBound, total]
+
+                            ]
+                        }
+                }
+            },
+            "totalConverter": () => {
+                const grade = inputValues.grade;
+
+                const pctLower = grade.gradeRange[0][0]/grade.gradeRange[0][1];
+                const pctUpper = grade.gradeRange[1][0]/grade.gradeRange[1][1];
+
+                const newTotal = inputValues.total;
+
+                return {grade: {
+                        gradeRange: [
+                            [pctLower*newTotal, newTotal],
+                            [pctUpper*newTotal, newTotal]
+
+                        ]
+                    }
+                }
+            },
+            "constant": () => {
+
+                return {output: inputValues.input}
+
             }
         }
 

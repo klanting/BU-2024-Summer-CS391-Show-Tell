@@ -18,7 +18,8 @@ config.addPortType({
         Controls.number({
             name: "percentage",
             label: "percentage",
-            defaultValue: 0
+            defaultValue: 0,
+
         })
     ]
 })
@@ -32,24 +33,50 @@ config.addPortType({
         Controls.number({
             name: "integer",
             label: "integer",
-            defaultValue: 0
+            defaultValue: 10,
         })
     ]
 })
 
 config.addPortType({
-    type: "string",
-    name: "string",
-    label: "string",
+    type: "operation",
+    name: "operation",
+    label: "operation",
     color: Colors.green,
+    hidePort: true,
     controls: [
-        Controls.text({
-            name: "string",
-            label: "string",
-            defaultValue: "Unnamed text"
+        Controls.select({
+            name: "operation",
+            label: "operation",
+            options: [
+                {value: "+", label: "+"},
+                {value: "-", label: "-"},
+                {value: "*", label: "*"},
+                {value: "/", label: "/"},
+                {value: "^", label: "^"},
+            ]
         })
     ]
 })
+
+config.addPortType({
+    type: "constantType",
+    name: "constantType",
+    label: "Constant Type",
+    color: Colors.green,
+    hidePort: true,
+    controls: [
+        Controls.select({
+            name: "constantType",
+            label: "Constant Type",
+            options: [
+                {value: "integer", label: "Integer"},
+                {value: "percentage", label: "Percentage"},
+            ]
+        })
+    ]
+})
+
 
 config.addPortType({
     type: "boolean",
@@ -71,19 +98,13 @@ config.addNodeType({
     label: "Grade Creator",
     description: "Create a grade object using grade information",
 
-    inputs: ports => (inputData, connections, context) => {
+    inputs: ports => (inputData) => {
 
         let portsList = [];
 
         portsList.push(ports.boolean({
             name: "isGradeKnown",
             label: "grade is known",
-            hidePort: true
-        }));
-
-        portsList.push(ports.string({
-            name: "evaluationName",
-            label: "evaluation name",
             hidePort: true
         }));
 
@@ -124,7 +145,7 @@ config.addNodeType({
     label: "Weighted Sum",
     description: "Takes a Weighted sum between grades",
 
-    inputs: ports => (inputData, connections, context) =>
+    inputs: ports => (inputData, connections) =>
         {
 
             const connKeys = Object.keys(connections.inputs);
@@ -136,7 +157,7 @@ config.addNodeType({
             for (let i=0; i<connKeys.length; i++){
 
                 const connKey = connKeys[i];
-                const match = connKey.match(re).length > 0;
+                const match = connKey.match(re) !== undefined;
 
                 if (!match){
                     continue;
@@ -147,6 +168,19 @@ config.addNodeType({
             }
 
             let portsList = []
+
+            portsList.push(ports.integer({
+                name: "total",
+                label: "total",
+                controls: [
+                    Controls.number({
+                        name: "integer",
+                        label: "integer",
+                        defaultValue: 100
+                    })
+                ]
+            }))
+
             /*
             * Dynamically determine the amount of grades
             * */
@@ -163,7 +197,6 @@ config.addNodeType({
             }
 
 
-
             return portsList
         }
         ,
@@ -176,6 +209,145 @@ config.addNodeType({
     ]
 
 })
+
+config.addNodeType({
+    type: "sum",
+    label: "Sum",
+    description: "Takes a normal sum of the grades",
+
+    inputs: ports => (inputData, connections) =>
+    {
+
+        const connKeys = Object.keys(connections.inputs);
+
+        const re = /grade*/g;
+
+        let matchCounter = 0;
+        let highest = 0;
+        for (let i=0; i<connKeys.length; i++){
+
+            const connKey = connKeys[i];
+            const match = connKey.match(re).length > 0;
+
+            if (!match){
+                continue;
+            }
+
+            matchCounter++;
+            highest = Math.max(Number(connKey.slice(5)), highest);
+        }
+
+        let portsList = []
+
+        /*
+        * Dynamically determine the amount of grades
+        * */
+        for (let i =0; i < Math.max(matchCounter+1, highest); i++){
+            portsList.push(ports.grade({
+                name: `grade${i+1}`,
+                label: `grade ${i+1}`
+            }));
+
+        }
+
+
+        return portsList
+    }
+    ,
+
+    outputs: ports => [
+        ports.grade({
+            name: "grade",
+            label: "grade"
+        }),
+    ]
+
+})
+
+config.addNodeType({
+    type: "totalConverter",
+    label: "Total Converter",
+    description: "Convert the total of a grade (keeping the percentage)",
+
+    inputs: ports => [
+        ports.grade({
+            name: "grade",
+            label: "grade"
+        }),
+        ports.integer({
+            name: "total",
+            label: "new total",
+            controls: [
+                Controls.number({
+                    name: "integer",
+                    label: "integer",
+                    defaultValue: 100
+                })
+            ]
+        })
+    ],
+    outputs: ports => [
+        ports.grade({
+            name: "grade",
+            label: "grade"
+        }),
+    ]
+
+})
+
+config.addNodeType({
+    type: "integerOperation",
+    label: "Integer Operation",
+    description: "Do operations with integers",
+
+    inputs: ports => [
+        ports.integer(),
+        ports.integer(),
+        ports.operation()
+    ],
+    outputs: ports => [
+        ports.integer()
+    ]
+
+})
+
+config.addNodeType({
+    type: "constant",
+    label: "Constant",
+    description: "Get a constant value",
+
+    inputs: ports => (inputData) => {
+        console.log(inputData, "w", inputData.constantType)
+
+        if (inputData.constantType === undefined){
+            return [ports.constantType()];
+        }
+
+        if (inputData.constantType.constantType === "integer"){
+            return [ports.constantType(), ports.integer({hidePort: true, name: "input"})];
+        }else if (inputData.constantType.constantType === "percentage"){
+            return [ports.constantType(), ports.percentage({hidePort: true, name: "input"})];
+        }
+
+        return [ports.constantType()];
+
+
+    },
+    outputs: ports => (inputData) => {
+        console.log(inputData.constantType.constantType)
+        if (inputData.constantType.constantType === "integer"){
+            return [ports.integer({name: "output"})];
+        }else if (inputData.constantType.constantType === "percentage"){
+            return [ports.percentage({name: "output"})];
+        }
+
+        return [];
+
+
+    }
+
+})
+
 
 config.addRootNodeType({
     type: "resultNode",

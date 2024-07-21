@@ -30,6 +30,7 @@ npm install flume
 - Weighted Sum:
     - This node let the user take a weighted sum of the grades
     - Inputs
+        - total points obtainable for the grade (integer) 
         - grade 1 (Object)
         - weight 1 (percentage)
         - ...
@@ -40,7 +41,16 @@ npm install flume
 - Sum:
   - Take a sum of the grades
   - Inputs
+    - grade 1 (Object)
+    - ...
+    - grade n (Object)
   - Outputs
+- Total Converter:
+  - Convert the total amount of points for a grade to another total, while keeping the same percentage
+  - Inputs
+    - grade (Object)
+  - Outputs
+    - grade (Object)
 - Required Sub Grades
     - This object can set required grades for sub-grades, (ex. on both the project and the exam someone need to pass else the person would receive a grade of 20%)
     - Inputs
@@ -50,4 +60,19 @@ npm install flume
         - Grade n (Object)
         - Minimum n (percentage)
         - Else grade (Object)
-- Constants
+      
+- Integer Arithmetic
+  - Node to do arithmetic with integers
+  - Inputs
+    - Integer (Integer)
+    - Integer (Integer)
+    - Operation (String)
+  - Outputs
+    - Integer (Integer)
+- Constant
+  - A way to create constant integer/percentage
+  - Inputs
+    - constantTYpe (decide which type the constant has)
+    - integer/percentage depending on constantType
+  - Outputs
+    - integer/percentage depending on constantType
