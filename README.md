@@ -11,6 +11,8 @@ npm install flume
 
 ## Important observations
 - ``<NodeEditor/>`` Takes up the entire space, so it is recommended to put it in a div with a defined width and height
+- You have not much freedom/customization options
+- Give each node type each own file, because the code can become long
 
 ## List of port types
 - Grade (Object containing grade information)
