@@ -127,7 +127,7 @@ config.addNodeType(requiredGrade.nodeType)
 
 config.addRootNodeType({
     type: "resultNode",
-    label: "Results",
+    label: "Result",
     initialWidth: 170,
     inputs: ports => [
         ports.grade({

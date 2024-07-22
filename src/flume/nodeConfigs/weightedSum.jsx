@@ -60,7 +60,7 @@ const nodeType = {
                 label: `weight ${i+1}`
             }));
             console.log(inputData)
-            if (inputData.boolean.boolean){
+            if (inputData.boolean !== undefined && inputData.boolean.boolean){
                 portsList.push(ports.percentage({
                     name: `minimum${i+1}`,
                     label: `Minimum ${i+1}`
@@ -69,7 +69,7 @@ const nodeType = {
 
         }
 
-        if (inputData.boolean.boolean){
+        if (inputData.boolean !== undefined && inputData.boolean.boolean){
             portsList.push(ports.grade({
                 name: "elseMaxGrade",
                 label: `Else Max Grade`,
