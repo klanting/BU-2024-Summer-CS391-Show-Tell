@@ -1,4 +1,4 @@
-import {getNanGrade, getPercentage} from "../gradeLogic.jsx";
+import {getMinGrade, getNanGrade, getPercentage} from "../gradeLogic.jsx";
 
 
 const nodeType = {
@@ -21,14 +21,15 @@ const nodeType = {
         })
     ],
     outputs: ports => [
-        ports.grade()
+        ports.grade(),
     ]
 
 }
 
 const resolveFunction = (inputValues)=> {
-    console.log("jiwpdw", inputValues)
+
     if (inputValues.grade === undefined){inputValues.grade = getNanGrade()}
+    console.log("v", inputValues)
     if (inputValues.elseMaxGrade === undefined){inputValues.elseMaxGrade = getNanGrade()}
 
     const lowerPCT = getPercentage(inputValues.grade.gradeRange[0]);
@@ -38,11 +39,11 @@ const resolveFunction = (inputValues)=> {
     let upperBound = inputValues.grade.gradeRange[1];
 
     if (lowerPCT < inputValues.minimum){
-        lowerBound = inputValues.elseMaxGrade.gradeRange[0];
+        lowerBound = getMinGrade(inputValues.elseMaxGrade.gradeRange[0], inputValues.grade.gradeRange[0]);
     }
 
     if (upperPCT < inputValues.minimum){
-        upperBound = inputValues.elseMaxGrade.gradeRange[1];
+        upperBound =  getMinGrade(inputValues.elseMaxGrade.gradeRange[1], inputValues.grade.gradeRange[1]);
     }
 
     return {grade: {gradeRange: [lowerBound, upperBound]}}

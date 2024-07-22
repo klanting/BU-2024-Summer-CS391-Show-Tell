@@ -70,10 +70,10 @@ export default function Editor(){
 
     const engine = new RootEngine(config, resolvePorts, resolveNodes);
     const results = useRootEngine(nodes, engine);
-
+    console.log("resukt", results.finalGrade.gradeRange[0])
     return (
         <>
-            <div style={{width: "90vw", height: "90vh"}}>
+            <div style={{width: "70vw", height: "90vh"}}>
                 <NodeEditor
                     portTypes={config.portTypes}
                     nodeTypes={config.nodeTypes}

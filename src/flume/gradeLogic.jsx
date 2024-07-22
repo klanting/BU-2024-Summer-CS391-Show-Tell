@@ -34,3 +34,13 @@ export function getGrades(inputObject){
 export function getNanGrade(){
     return {gradeRange: [[NaN, NaN], [NaN, NaN]]}
 }
+
+export function getMinGrade(gradeTup1, gradeTup2){
+
+    const pct1 = getPercentage(gradeTup1);
+    const pct2 = getPercentage(gradeTup2);
+
+    const minPct = Math.min(pct1, pct2);
+
+    return [minPct*gradeTup1[1], gradeTup1[1]]
+}

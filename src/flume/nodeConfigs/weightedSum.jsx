@@ -1,5 +1,5 @@
 import {Controls} from "flume";
-import {getGrades, getPercentage} from "../gradeLogic.jsx";
+import {getGrades, getMinGrade, getNanGrade, getPercentage} from "../gradeLogic.jsx";
 
 const nodeType = {
     type: "weightedSum",
@@ -19,7 +19,7 @@ const nodeType = {
 
             const connKey = connKeys[i];
             const match = connKey.match(re) !== null;
-            console.log(match, connKey.match(re), connKey)
+
             if (!match){
                 continue;
             }
@@ -42,6 +42,11 @@ const nodeType = {
             ]
         }))
 
+        portsList.push(ports.boolean({
+            label: "Minimum Required",
+            hidePort: true
+        }))
+
         /*
         * Dynamically determine the amount of grades
         * */
@@ -54,7 +59,22 @@ const nodeType = {
                 name: `weight${i+1}`,
                 label: `weight ${i+1}`
             }));
+            console.log(inputData)
+            if (inputData.boolean.boolean){
+                portsList.push(ports.percentage({
+                    name: `minimum${i+1}`,
+                    label: `Minimum ${i+1}`
+                }));
+            }
 
+        }
+
+        if (inputData.boolean.boolean){
+            portsList.push(ports.grade({
+                name: "elseMaxGrade",
+                label: `Else Max Grade`,
+
+            }));
         }
 
 
@@ -80,30 +100,49 @@ const resolveFunction = (inputValues) => {
     let lowerBound = 0;
     let upperBound = 0;
 
-    const gradeList = getGrades(inputValues);
+    let aboveMinimumLower = true;
+    let aboveMinimumUpper = true;
 
+    const gradeList = getGrades(inputValues);
+    console.log("v", inputValues)
+    if (inputValues.elseMaxGrade === undefined){inputValues.elseMaxGrade = getNanGrade()}
+    console.log("v", inputValues)
     for (let i=0; i<gradeList.length; i++){
         const grade = gradeList[i];
 
-        lowerBound += weightedSum(
-            getPercentage(inputValues[`grade${grade[0]}`].gradeRange[0]),
-            inputValues[`weight${grade[0]}`]);
+        const lowerPCT = getPercentage(inputValues[`grade${grade[0]}`].gradeRange[0]);
+        const upperPCT = getPercentage(inputValues[`grade${grade[0]}`].gradeRange[1]);
 
-        upperBound += weightedSum(
+        lowerBound += weightedSum(lowerPCT, inputValues[`weight${grade[0]}`]);
 
-            getPercentage(inputValues[`grade${grade[0]}`].gradeRange[1]),
-            inputValues[`weight${grade[0]}`]);
+        upperBound += weightedSum(upperPCT, inputValues[`weight${grade[0]}`]);
+
+        if (inputValues.boolean){
+
+            aboveMinimumLower = aboveMinimumLower && (lowerPCT >= inputValues[`minimum${grade[0]}`]);
+            aboveMinimumUpper = aboveMinimumUpper && (upperPCT >= inputValues[`minimum${grade[0]}`]);
+        }
     }
 
     const total = inputValues.total;
 
+    let lowerGrade = [lowerBound*total, total];
+    let upperGrade = [upperBound*total, total];
+
+    if (!aboveMinimumLower){
+        lowerGrade = getMinGrade(lowerGrade, inputValues.elseMaxGrade.gradeRange[0])
+        console.log("lower", lowerGrade)
+    }
+
+    if (!aboveMinimumUpper){
+        upperGrade = getMinGrade(upperGrade, inputValues.elseMaxGrade.gradeRange[1])
+    }
+
+    console.log("v3", [lowerGrade, upperGrade])
+
     return {grade:
             {
-                gradeRange: [
-                    [lowerBound*total, total],
-                    [upperBound*total, total]
-
-                ]
+                gradeRange: [lowerGrade, upperGrade]
             }
     }
 }

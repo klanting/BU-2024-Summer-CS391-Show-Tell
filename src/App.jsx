@@ -1,11 +1,10 @@
-import Editor from "./components/Editor.jsx";
-
+import Menu from "./components/Menu.jsx";
 
 function App() {
 
     return (
         <>
-            <Editor/>
+            <Menu/>
         </>
     );
 }

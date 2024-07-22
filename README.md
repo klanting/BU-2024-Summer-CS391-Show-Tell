@@ -9,6 +9,11 @@ This project uses flume, you can install flume using
 npm install flume
 ```
 
+For styling this project uses styled components
+```shell
+npm install styled-components
+```
+
 ## Important observations
 - ``<NodeEditor/>`` Takes up the entire space, so it is recommended to put it in a div with a defined width and height
 - You have not much freedom/customization options
