@@ -8,11 +8,11 @@ const StyledDisplay = styled.div`
     width: 20vw;
     border-radius: 4vw;
     padding: 0.5vw;
-    
+
     color: white;
     font-size: calc(2px + 1.8vw);
     text-align: center;
-    
+
     display: flex;
     flex-direction: column;
     align-content: center;
@@ -38,22 +38,23 @@ export default function GradeRangeDisplay(props) {
     let flumeResult = props.results;
 
     if (Object.keys(flumeResult).length === 0 || flumeResult.finalGrade === undefined) {
-        console.log("wd")
+
         flumeResult = {finalGrade: {gradeRange: [[NaN, NaN], [NaN, NaN]]}}
     }
-    console.log("v", flumeResult)
 
-    const lower = (getPercentage(flumeResult.finalGrade.gradeRange[0]) * 100).toFixed(1);
-    const upper = (getPercentage(flumeResult.finalGrade.gradeRange[1]) * 100).toFixed(1);
+
+    const lower = (getPercentage(flumeResult.finalGrade.gradeRange[0]) * 100);
+    const upper = (getPercentage(flumeResult.finalGrade.gradeRange[1]) * 100);
 
     const [targetGrade, setTargetGrade] = useState(70);
 
     function getNumberStyled(value){
-        console.log("tv", targetGrade, value)
         let color = "gray";
 
         if (!isNaN(value)){
+
             if (value > targetGrade){
+
                 color = "green";
             }
             if (value < targetGrade){
@@ -61,7 +62,6 @@ export default function GradeRangeDisplay(props) {
             }
         }
 
-        console.log("tv", color)
         return styled.span`
         color: ${color};
         `;
@@ -70,8 +70,8 @@ export default function GradeRangeDisplay(props) {
     const StyledLower = getNumberStyled(lower);
     const StyledUpper = getNumberStyled(upper);
 
-
-
+    let gradeAchievedChance = Math.min(Math.max(upper-targetGrade, 0)/(upper-lower)*100, 100);
+    let gradeMissedChance = Math.min(Math.max(targetGrade-lower, 0)/(upper-lower)*100, 100);
 
     /*
     * List with XML that needs to be rendered, each in a new component to keep
@@ -94,8 +94,22 @@ export default function GradeRangeDisplay(props) {
             "title": "Grade Range",
             "content":
                 <p>
-                <StyledLower>{lower}%</StyledLower> - <StyledUpper>{upper}%</StyledUpper>
+                <StyledLower>{lower.toFixed(1)}%</StyledLower> - <StyledUpper>{upper.toFixed(1)}%</StyledUpper>
                 </p>
+
+        },
+        {
+            "title": "Required Grade reachability",
+            "content":
+                <>
+                    <p>
+                        Success <StyledGreen>{gradeAchievedChance.toFixed(1)}%</StyledGreen> range coverage
+                    </p>
+                    <p>
+                        Failure <StyledRed>{gradeMissedChance.toFixed(1)}%</StyledRed> range coverage
+                    </p>
+
+                </>
 
         },
         {
@@ -103,7 +117,7 @@ export default function GradeRangeDisplay(props) {
             "content":
                 <>
                     <p>
-                        Obtained: <StyledGreen>{lower}%</StyledGreen>
+                        Obtained: <StyledGreen>{lower.toFixed(1)}%</StyledGreen>
                     </p>
                     <p>
                         Obtainable: <StyledGray>{(upper - lower).toFixed(1)}%</StyledGray>

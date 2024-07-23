@@ -29,7 +29,7 @@ const nodeType = {
 const resolveFunction = (inputValues)=> {
 
     if (inputValues.grade === undefined){inputValues.grade = getNanGrade()}
-    console.log("v", inputValues)
+
     if (inputValues.elseMaxGrade === undefined){inputValues.elseMaxGrade = getNanGrade()}
 
     const lowerPCT = getPercentage(inputValues.grade.gradeRange[0]);

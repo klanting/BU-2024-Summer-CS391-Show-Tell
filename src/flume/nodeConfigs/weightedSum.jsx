@@ -59,7 +59,7 @@ const nodeType = {
                 name: `weight${i+1}`,
                 label: `weight ${i+1}`
             }));
-            console.log(inputData)
+
             if (inputData.boolean !== undefined && inputData.boolean.boolean){
                 portsList.push(ports.percentage({
                     name: `minimum${i+1}`,
@@ -79,9 +79,7 @@ const nodeType = {
 
 
         return portsList
-    }
-    ,
-
+    },
     outputs: ports => [
         ports.grade({
             name: "grade",
@@ -104,9 +102,9 @@ const resolveFunction = (inputValues) => {
     let aboveMinimumUpper = true;
 
     const gradeList = getGrades(inputValues);
-    console.log("v", inputValues)
+
     if (inputValues.elseMaxGrade === undefined){inputValues.elseMaxGrade = getNanGrade()}
-    console.log("v", inputValues)
+
     for (let i=0; i<gradeList.length; i++){
         const grade = gradeList[i];
 
@@ -131,14 +129,12 @@ const resolveFunction = (inputValues) => {
 
     if (!aboveMinimumLower){
         lowerGrade = getMinGrade(lowerGrade, inputValues.elseMaxGrade.gradeRange[0])
-        console.log("lower", lowerGrade)
+
     }
 
     if (!aboveMinimumUpper){
         upperGrade = getMinGrade(upperGrade, inputValues.elseMaxGrade.gradeRange[1])
     }
-
-    console.log("v3", [lowerGrade, upperGrade])
 
     return {grade:
             {
