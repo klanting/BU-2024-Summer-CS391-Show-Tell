@@ -20,18 +20,14 @@ const StyledDisplay = styled.div`
     border: solid 3px white;
 `;
 
+const StyledGradeRangeSpan= styled.span`
+        color: ${(prop) => prop.color};
+        `;
 
 
-function getStyledColor(color){
-    return styled.span`
-        color: ${color};
-    `;
-}
-
-const StyledRed = getStyledColor("red");
-const StyledGray = getStyledColor("gray");
-const StyledGreen = getStyledColor("green");
-
+const StyledColor = styled.span`
+    color: ${(prop) => prop.color}
+`;
 
 export default function GradeRangeDisplay(props) {
 
@@ -62,16 +58,19 @@ export default function GradeRangeDisplay(props) {
             }
         }
 
-        return styled.span`
-        color: ${color};
-        `;
+        return color;
     }
-
-    const StyledLower = getNumberStyled(lower);
-    const StyledUpper = getNumberStyled(upper);
 
     let gradeAchievedChance = Math.min(Math.max(upper-targetGrade, 0)/(upper-lower)*100, 100);
     let gradeMissedChance = Math.min(Math.max(targetGrade-lower, 0)/(upper-lower)*100, 100);
+
+    if (isNaN(gradeAchievedChance)){
+        gradeAchievedChance = 0;
+    }
+
+    if (isNaN(gradeMissedChance)){
+        gradeMissedChance = 0;
+    }
 
     /*
     * List with XML that needs to be rendered, each in a new component to keep
@@ -94,7 +93,11 @@ export default function GradeRangeDisplay(props) {
             "title": "Grade Range",
             "content":
                 <p>
-                <StyledLower>{lower.toFixed(1)}%</StyledLower> - <StyledUpper>{upper.toFixed(1)}%</StyledUpper>
+                <StyledGradeRangeSpan color={getNumberStyled(lower)}>
+                    {lower.toFixed(1)}%
+                </StyledGradeRangeSpan> - <StyledGradeRangeSpan color={getNumberStyled(upper)}>
+                    {upper.toFixed(1)}%
+                </StyledGradeRangeSpan>
                 </p>
 
         },
@@ -103,10 +106,10 @@ export default function GradeRangeDisplay(props) {
             "content":
                 <>
                     <p>
-                        Success <StyledGreen>{gradeAchievedChance.toFixed(1)}%</StyledGreen> range coverage
+                        Success <StyledColor color={"green"}>{gradeAchievedChance.toFixed(1)}%</StyledColor> range coverage
                     </p>
                     <p>
-                        Failure <StyledRed>{gradeMissedChance.toFixed(1)}%</StyledRed> range coverage
+                        Failure <StyledColor color={"red"}>{gradeMissedChance.toFixed(1)}%</StyledColor > range coverage
                     </p>
 
                 </>
@@ -117,13 +120,13 @@ export default function GradeRangeDisplay(props) {
             "content":
                 <>
                     <p>
-                        Obtained: <StyledGreen>{lower.toFixed(1)}%</StyledGreen>
+                        Obtained: <StyledColor color={"green"}>{lower.toFixed(1)}%</StyledColor>
                     </p>
                     <p>
-                        Obtainable: <StyledGray>{(upper - lower).toFixed(1)}%</StyledGray>
+                        Obtainable: <StyledColor color={"gray"}>{(upper - lower).toFixed(1)}%</StyledColor>
                     </p>
                     <p>
-                        Lost: <StyledRed>{(100 - upper).toFixed(1)}%</StyledRed>
+                        Lost: <StyledColor color={"red"}>{(100 - upper).toFixed(1)}%</StyledColor>
                     </p>
                 </>
 
