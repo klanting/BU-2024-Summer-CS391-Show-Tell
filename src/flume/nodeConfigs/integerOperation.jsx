@@ -1,4 +1,6 @@
-
+/*
+* This file, contains all the information needed to make the 'integerOperation' node component
+* */
 
 const nodeType = {
     type: "integerOperation",

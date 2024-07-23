@@ -11,10 +11,18 @@ const MenuArea = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    margin-top: 1vh;
 `;
 
 export default function Menu (){
+    /*
+    * Displays a menu for the grade Calculator
+    * */
 
+    /*
+    * RootEngine computation is sued to compute the resulting value of the visual code
+    * useRootEngine is the node that does the actual computations
+    * */
     const [nodes, setNodes] = useState({})
     const engine = new RootEngine(config, resolvePorts, resolveNodes);
     const results = useRootEngine(nodes, engine);

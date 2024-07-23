@@ -1,3 +1,6 @@
+/*
+* This file, contains all the information needed to make the 'gradeCreator' node component
+* */
 
 const nodeType = {
     type: "gradeCreator",

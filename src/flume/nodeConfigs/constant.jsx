@@ -1,4 +1,6 @@
-
+/*
+* This file, contains all the information needed to make the 'constant' node component
+* */
 
 const nodeType = {
     type: "constant",

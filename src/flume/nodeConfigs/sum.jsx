@@ -1,5 +1,9 @@
 import {getGrades} from "../gradeLogic.jsx";
 
+/*
+* This file, contains all the information needed to make the 'sum' node component
+* */
+
 const nodeType = {
     type: "sum",
     label: "Sum",

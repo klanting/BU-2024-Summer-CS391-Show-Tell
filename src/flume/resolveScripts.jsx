@@ -9,6 +9,10 @@ import integerToPercentage from "./nodeConfigs/integerToPercentage.jsx";
 import requiredGrade from "./nodeConfigs/requiredGrade.jsx";
 
 export function resolvePorts(portType, data){
+    /*
+    * This function is make to determine how certain data from a port needs to be retrieved
+    * In practice it will take the right data from the data based on the port Type
+    * */
 
     /*
     * This dictionary/Map is a trick I often use because I don't like switch statements
@@ -31,6 +35,11 @@ export function resolvePorts(portType, data){
 }
 
 export function resolveNodes(node, inputValues, nodeType){
+    /*
+    * This component handles the calculations for each node.
+    * As input it retrieves a dictionary/object/map with the input values, and
+    * it returns a dictionary/object/map with the output values (based on the output ports)
+    * */
 
     /*
     * This dictionary/Map is a trick I often use because I don't like switch statements

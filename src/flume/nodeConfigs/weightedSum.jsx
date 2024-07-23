@@ -1,6 +1,10 @@
 import {Controls} from "flume";
 import {getGrades, getMinGrade, getNanGrade, getPercentage} from "../gradeLogic.jsx";
 
+/*
+* This file, contains all the information needed to make the 'weightedSum' node component
+* */
+
 const nodeType = {
     type: "weightedSum",
     label: "Weighted Sum",
@@ -8,7 +12,6 @@ const nodeType = {
 
     inputs: ports => (inputData, connections) =>
     {
-
         const connKeys = Object.keys(connections.inputs);
 
         const re = /grade*/g;

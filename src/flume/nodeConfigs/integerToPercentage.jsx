@@ -1,4 +1,6 @@
-
+/*
+* This file, contains all the information needed to make the 'integerToPercentage' node component
+* */
 
 const nodeType = {
     type: "integerToPercentage",

@@ -1,5 +1,8 @@
 import {Controls} from "flume";
 
+/*
+* This file, contains all the information needed to make the 'totalConverter' node component
+* */
 
 const nodeType = {
     type: "totalConverter",

@@ -12,6 +12,11 @@ import requiredGrade from "./nodeConfigs/requiredGrade.jsx";
 
 const config = new FlumeConfig()
 
+/*
+* Add port types to the config, allowing
+* the coder to use these portTypes in their nodes.
+* Ports can only connect to other ports with the same portType
+* */
 config.addPortType({
     type: "grade",
     name: "grade",
@@ -114,6 +119,9 @@ config.addPortType({
     ]
 })
 
+/*
+* Add all the types of possible nodes to the config
+* */
 config.addNodeType(gradeCreator.nodeType);
 config.addNodeType(weightedSum.nodeType);
 config.addNodeType(sum.nodeType);
@@ -124,7 +132,9 @@ config.addNodeType(percentageToInteger.nodeType);
 config.addNodeType(integerToPercentage.nodeType);
 config.addNodeType(requiredGrade.nodeType)
 
-
+/*
+* Create a root node
+* */
 config.addRootNodeType({
     type: "resultNode",
     label: "Result",

@@ -17,7 +17,9 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-
+    /*
+    * Create the menu
+    * */
     return (
         <>
             <Menu/>

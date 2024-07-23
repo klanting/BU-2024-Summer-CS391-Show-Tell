@@ -1,5 +1,8 @@
 import {getMinGrade, getNanGrade, getPercentage} from "../gradeLogic.jsx";
 
+/*
+* This file, contains all the information needed to make the 'requiredGrade' node component
+* */
 
 const nodeType = {
     type: "requiredGrade",
