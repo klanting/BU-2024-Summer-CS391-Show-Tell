@@ -54,6 +54,13 @@ const resolveFunction = (inputValues) => {
 
     if (inputValues.isGradeKnown){
 
+        /*
+        * In case not default is provided (because dynamic rendering)
+        * */
+        if (inputValues.score === undefined){
+            inputValues.score = 0;
+        }
+
         const gradeTuple = [inputValues.score, inputValues.total];
         gradeRange = [gradeTuple, gradeTuple]
     }

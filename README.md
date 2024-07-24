@@ -56,7 +56,7 @@ also remove the node
     |   Grade    | GRADE | resulting grade object |
 
 ### Weighted Sum:
-![gradeCreator](readMeImages/weightedSum.png)
+![weightedSum](readMeImages/weightedSum.png)
 - <p>
     This node let the user take a weighted sum of the grades. THe user can provide a grade with a corresponding weight (in %), it also has an option to use minimum requirements.
     When using minimum requirements, each sub grade needs to have a grade higher than the minimum percentage, if it fails so, the final grade will be the lesser grade between the weighted average and the else grade.
@@ -82,7 +82,7 @@ also remove the node
   |   Grade    | GRADE | resulting grade object |
       
 ### Sum:
-![gradeCreator](readMeImages/sum.png)
+![sum](readMeImages/sum.png)
   - Take a sum of the grades. The weight of each grade depends on the total points of each grade
   - Inputs
 
@@ -98,14 +98,14 @@ also remove the node
     |   Grade    | GRADE | resulting grade object |
 
 ### Total Converter:
-![gradeCreator](readMeImages/totalConverter.png)
+![totalConverter](readMeImages/totalConverter.png)
  - Convert the total amount of points for a grade to another total, while keeping the same percentage
  - Inputs
 
-    | InputName |  Type   | Purpose                |
-    |:---------:|:-------:|:-----------------------|
-    |   Grade   |  GRADE  | resulting grade object |
-    | new total | INTEGER | new total value        |
+    | InputName |  Type   | Purpose         |
+    |:---------:|:-------:|:----------------|
+    |   Grade   |  GRADE  | grade object    |
+    | new total | INTEGER | new total value |
 
   - Outputs
 
@@ -114,45 +114,90 @@ also remove the node
     |   Grade    | GRADE | resulting grade object |
 
 ### Required Grades
-
-- Require that the grade is higher than the minimum else give it an else grade
+![requiredGrades](readMeImages/requiredGrades.png)
+- Require that the grade is higher than the minimum else give it the minimum of the else grade and the actual grade
 - Inputs
-    - Grade (Object)
-    - Minimum (percentage)
-    - Else Max grade (Object)
 
-### Integer Arithmetic
+  | InputName |    Type    | Purpose                              |
+  |:---------:|:----------:|:-------------------------------------|
+  |   Grade   |   GRADE    | grade object                         |
+  |  Minimum  | PERCENTAGE | the minimum grade percentage we need |
+  | Else Max  |   GRADE    | alternative grade                    |
+
+- Outputs
+
+  | OutputName | Type  | Purpose                |
+  |:----------:|:-----:|:-----------------------|
+  |   Grade    | GRADE | resulting grade object |
+
+### Integer Operation
+![integerOperation](readMeImages/integerOperation.png)
 - Node to do arithmetic with integers
 - Inputs
-  - Integer (Integer)
-  - Integer (Integer)
-  - Operation (String)
+
+  | InputName |   Type    | Purpose                                                             |
+  |:---------:|:---------:|:--------------------------------------------------------------------|
+  | Integer1  |  INTEGER  | Integer used in calculation                                         |
+  | Integer2  |  INTEGER  | Integer used in calculation (some operations don't have this input) |
+  | operation | OPERATION | chose of arithmetic operation                                       |
+
 - Outputs
-  - Integer (Integer)
+
+  | OutputName |  Type   | Purpose           |
+  |:----------:|:-------:|:------------------|
+  |  Integer   | INTEGER | resulting integer |
 
 ### Constant
+![constant](readMeImages/constant.png)
 - A way to create constant integer/percentage
 - Inputs
-  - constantTYpe (decide which type the constant has)
-  - integer/percentage depending on constantType
+
+  |     InputName      |        Type        | Purpose                                             |
+  |:------------------:|:------------------:|:----------------------------------------------------|
+  |    constantType    |    CONSTANTTYPE    | decide which type of constant we want (pct/integer) |
+  | integer/percentage | INTEGER/PERCENTAGE | depending on constantType                           |
+
 - Outputs
-  - integer/percentage depending on constantType
+
+  |     OutputName     |        Type        | Purpose                                                |
+  |:------------------:|:------------------:|:-------------------------------------------------------|
+  | Integer/percentage | INTEGER/PERCENTAGE | resulting integer/percentage depending on constantType |
 
 ### Percentage To Integer
-- Converts a percentage to an integer (rounding will occur)
+![percentageToInteger](readMeImages/percentageToInteger.png)
+- Converts a percentage to an integer (rounding will occur). (50% -> int: 50)
 - Inputs
-  - Percentage (Percentage)
-- Outputs
-  - Integer (Integer)
 
-- Integer To percentage
-    - Converts an integer to a percentage
-    - Inputs
-        - Integer (Integer)
-    - Outputs
-        - Percentage (Percentage)
+  | InputName  |    Type    | Purpose          |
+  |:----------:|:----------:|:-----------------|
+  | Percentage | PERCENTAGE | percentage input |
+
+- Outputs
+
+    | OutputName |  Type   | Purpose           |
+    |:----------:|:-------:|:------------------|
+    |  Integer   | INTEGER | resulting integer |
+
+### Integer To percentage
+![integerToPercentage.](readMeImages/integerToPercentage.png)
+- Converts an integer to a percentage
+- Inputs
+
+  | InputName |  Type   | Purpose                               |
+  |:---------:|:-------:|:--------------------------------------|
+  |  Integer  | INTEGER | integer needed to be converted to pct |
+
+- Outputs
+
+  | OutputName |    Type    | Purpose              |
+  |:----------:|:----------:|:---------------------|
+  | Percentage | PERCENTAGE | resulting percentage |
 
 ## Important observations
 - ``<NodeEditor/>`` Takes up the entire space, so it is recommended to put it in a div with a defined width and height
 - You have not much freedom/customization options
 - Give each node type each own file, because the code can become long
+- default values for controls do not work when the ports are dynamically generated
+
+## Side Notes
+Grades and weights are not constraint, so a user could give himself/herself 11/10 or a weight (in weightedSum) of 200%, this is to allow flexibility for things like extra credit.

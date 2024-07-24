@@ -91,7 +91,12 @@ export default function GradeRangeDisplay(props) {
     * those cases, we want to just give it 0%
     * */
     if (isNaN(gradeAchievedChance)){
-        gradeAchievedChance = 0;
+        if (upper >= targetGrade){
+            gradeAchievedChance = 100;
+        }else{
+            gradeAchievedChance = 0;
+        }
+
     }
 
     if (isNaN(gradeMissedChance)){
