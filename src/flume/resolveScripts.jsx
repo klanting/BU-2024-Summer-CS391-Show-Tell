@@ -23,14 +23,13 @@ export function resolvePorts(portType, data){
     * */
     const entryMap = {
         "boolean": () => data.boolean,
-        "integer": () => data.integer,
+        "integer": () => Math.floor(data.integer),
         "string": () => data.string,
         "grade": () => data.grade,
         "percentage": () => data.percentage/100,
         "constantType": () => data.constantType,
         "operation": () => data.operation
     }
-
     return entryMap[portType]();
 }
 
