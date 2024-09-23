@@ -2,7 +2,11 @@
 This Project is a project for the course
 CS 391 at Boston University Summer Term 2 2024.
 
-This Project is done for the 'Show & Tell' extra credit.
+This Project is done for the 'Show & Tell' extra credit. Meaning that we needed to use a react tool in a project and give a small presentation about it. I chose to use the tool [Flume](https://flume.dev/).
+
+This project is being Archived because it is finalized.
+
+This project uses vite as buildtool.
 
 This project uses flume, you can install flume using
 ```shell
